@@ -1,0 +1,21 @@
+{
+  "name": "com.astenstudios.baas",
+  "version": "1.0.0",
+  "displayName": "Asten BaaS SDK",
+  "description": "SDK oficial de Unity para conectar tu juego con la infraestructura de Asten BaaS (Cloud Saves, Autenticación y Persistencia).",
+  "unity": "2021.3",
+  "author": {
+    "name": "Asten Studios",
+    "email": "contacto@astenstudios.com",
+    "url": "https://astenstudios.com"
+  },
+  "category": "BaaS",
+  "keywords": [
+    "baas",
+    "save",
+    "cloud",
+    "asten",
+    "unity",
+    "database"
+  ]
+}
