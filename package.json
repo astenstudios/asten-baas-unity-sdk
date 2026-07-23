@@ -17,5 +17,12 @@
     "asten",
     "unity",
     "database"
+  ],
+  "samples": [
+    {
+      "displayName": "Demo Scene & UI Components",
+      "description": "Escena interactiva con componentes de UI y sincronización automática para probar Cloud Saves y Autenticación.",
+      "path": "Samples~/DemoScene"
+    }
   ]
 }

@@ -67,7 +67,7 @@ namespace AstenBaaS
         public void RegisterPlayer(string email, string password, Action<bool, string> callback)
         {
             string payload = $"{{\"email\":\"{email}\", \"password\":\"{password}\"}}";
-            StartCoroutine(PostRequestCoroutine("/user/register", payload, _apiKey, null, (success, response) =>
+            StartCoroutine(PostRequestCoroutine("/player/register", payload, _apiKey, null, (success, response) =>
             {
                 if (success)
                 {
@@ -83,7 +83,7 @@ namespace AstenBaaS
         public void LoginPlayer(string email, string password, Action<bool, string> callback)
         {
             string payload = $"{{\"provider\":\"email\", \"email\":\"{email}\", \"password\":\"{password}\"}}";
-            StartCoroutine(PostRequestCoroutine("/user/auth", payload, _apiKey, null, (success, response) =>
+            StartCoroutine(PostRequestCoroutine("/player/auth", payload, _apiKey, null, (success, response) =>
             {
                 if (success)
 
@@ -101,17 +101,7 @@ namespace AstenBaaS
                         }
                     }
 
-                    string idSearch = "\"_id\":\"";
-                    int idIndex = response.IndexOf(idSearch);
-                    if (idIndex != -1)
-                    {
-                        int start = idIndex + idSearch.Length;
-                        int end = response.IndexOf("\"", start);
-                        if (end != -1)
-                        {
-                            _activePlayerId = response.Substring(start, end - start);
-                        }
-                    }
+                    ExtractAndSetPlayerId(response);
 
                     Debug.Log($"[AstenSDK] Jugador autenticado exitosamente. ID: {_activePlayerId}");
                 }
@@ -125,7 +115,7 @@ namespace AstenBaaS
         public void LoginWithDeviceId(string deviceId, Action<bool, string> callback)
         {
             string payload = $"{{\"provider\":\"device\", \"device_id\":\"{deviceId}\"}}";
-            StartCoroutine(PostRequestCoroutine("/user/auth", payload, _apiKey, null, (success, response) =>
+            StartCoroutine(PostRequestCoroutine("/player/auth", payload, _apiKey, null, (success, response) =>
             {
                 if (success)
                 {
@@ -142,17 +132,7 @@ namespace AstenBaaS
                         }
                     }
 
-                    string idSearch = "\"_id\":\"";
-                    int idIndex = response.IndexOf(idSearch);
-                    if (idIndex != -1)
-                    {
-                        int start = idIndex + idSearch.Length;
-                        int end = response.IndexOf("\"", start);
-                        if (end != -1)
-                        {
-                            _activePlayerId = response.Substring(start, end - start);
-                        }
-                    }
+                    ExtractAndSetPlayerId(response);
 
                     Debug.Log($"[AstenSDK] Jugador autenticado por dispositivo exitosamente. ID: {_activePlayerId}");
                 }
@@ -166,7 +146,7 @@ namespace AstenBaaS
         public void LoginWithGoogle(string googleIdToken, Action<bool, string> callback)
         {
             string payload = $"{{\"provider\":\"google\", \"token\":\"{googleIdToken}\"}}";
-            StartCoroutine(PostRequestCoroutine("/user/auth", payload, _apiKey, null, (success, response) =>
+            StartCoroutine(PostRequestCoroutine("/player/auth", payload, _apiKey, null, (success, response) =>
             {
                 if (success)
                 {
@@ -183,17 +163,7 @@ namespace AstenBaaS
                         }
                     }
 
-                    string idSearch = "\"_id\":\"";
-                    int idIndex = response.IndexOf(idSearch);
-                    if (idIndex != -1)
-                    {
-                        int start = idIndex + idSearch.Length;
-                        int end = response.IndexOf("\"", start);
-                        if (end != -1)
-                        {
-                            _activePlayerId = response.Substring(start, end - start);
-                        }
-                    }
+                    ExtractAndSetPlayerId(response);
 
                     Debug.Log($"[AstenSDK] Jugador autenticado por Google exitosamente. ID: {_activePlayerId}");
                 }
@@ -207,7 +177,7 @@ namespace AstenBaaS
         public void LoginWithDiscord(string discordAccessToken, Action<bool, string> callback)
         {
             string payload = $"{{\"provider\":\"discord\", \"token\":\"{discordAccessToken}\"}}";
-            StartCoroutine(PostRequestCoroutine("/user/auth", payload, _apiKey, null, (success, response) =>
+            StartCoroutine(PostRequestCoroutine("/player/auth", payload, _apiKey, null, (success, response) =>
             {
                 if (success)
                 {
@@ -236,10 +206,31 @@ namespace AstenBaaS
                         }
                     }
 
+                    ExtractAndSetPlayerId(response);
+
                     Debug.Log($"[AstenSDK] Jugador autenticado por Discord exitosamente. ID: {_activePlayerId}");
                 }
                 callback?.Invoke(success, response);
             }));
+        }
+
+        private void ExtractAndSetPlayerId(string response)
+        {
+            string[] idKeys = new string[] { "\"id\":\"", "\"_id\":\"" };
+            foreach (var key in idKeys)
+            {
+                int index = response.IndexOf(key);
+                if (index != -1)
+                {
+                    int start = index + key.Length;
+                    int end = response.IndexOf("\"", start);
+                    if (end != -1)
+                    {
+                        _activePlayerId = response.Substring(start, end - start);
+                        return;
+                    }
+                }
+            }
         }
 
         #endregion
@@ -258,7 +249,7 @@ namespace AstenBaaS
                 return;
             }
 
-            string url = "/player/data";
+            string url = "/player";
             StartCoroutine(GetRequestCoroutine(url, _apiKey, _playerSessionToken, callback));
         }
 
@@ -276,7 +267,7 @@ namespace AstenBaaS
 
             // Convertimos el objeto C# a cadena JSON
             string jsonPayload = JsonUtility.ToJson(dataObject);
-            string fullPayload = $"{{\"customData\":{jsonPayload}}}"; // Ya no se requiere _userId en el payload
+            string fullPayload = $"{{\"custom_data\":{jsonPayload}}}"; // Ya no se requiere _userId en el payload
 
             // Aplicamos protección Debounce (cooldown)
             float timeSinceLastSave = Time.time - _lastSaveTime;
@@ -306,7 +297,7 @@ namespace AstenBaaS
         private void ExecuteSave(string payload, Action<bool, string> callback)
         {
             _lastSaveTime = Time.time;
-            StartCoroutine(PostRequestCoroutine("/player/data/save", payload, _apiKey, _playerSessionToken, callback));
+            StartCoroutine(PostRequestCoroutine("/player/data", payload, _apiKey, _playerSessionToken, callback));
         }
 
         private IEnumerator ExecuteSaveDeferredCoroutine(float delay)

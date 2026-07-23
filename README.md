@@ -19,6 +19,19 @@ El SDK está configurado como un **paquete oficial de Unity (UPM)**. Puedes inst
 
 ---
 
+## 🎨 Escena de Prueba y Ejemplos de UI (Samples)
+
+El SDK incluye una **Escena de Prueba Interactiva (`SampleScene.unity`)** con soporte para componentes de interfaz de usuario de **TextMeshPro** y un administrador de sincronización automática (`WebDataSyncManager.cs`).
+
+Para importar estos recursos visuales en tu proyecto de Unity:
+1. Abre **Window** ➔ **Package Manager**.
+2. Selecciona **Packages: In Project** o busca **Asten BaaS SDK** en la lista.
+3. En la pestaña **Samples**, verás **Demo Scene & UI Components**.
+4. Haz clic en **Import**.
+5. La escena y los scripts se copiarán automáticamente a la carpeta de tu proyecto: `Assets/Samples/Asten BaaS SDK/1.0.0/Demo Scene & UI Components/`.
+
+---
+
 ## 🛠️ Configuración Inicial
 
 Para empezar a utilizar el SDK, inicialízalo con tu **Game ID** y tu **API Key** (que puedes generar desde la Consola de Desarrollador de Asten BaaS):
