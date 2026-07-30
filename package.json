@@ -1,6 +1,6 @@
 {
   "name": "com.astenstudios.baas",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Asten BaaS SDK",
   "description": "Official Unity SDK to connect your game with Asten BaaS infrastructure (Cloud Saves, Authentication, and Persistence).",
   "unity": "2021.3",
