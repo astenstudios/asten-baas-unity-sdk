@@ -7,24 +7,24 @@ namespace AstenBaaS
     {
 
         /// <summary>
-        /// Registra o actualiza la puntuación del jugador si supera su marca previa.
+        /// Registers or updates the player's score if it beats their previous mark.
         /// </summary>
         public void SubmitScore(string leaderboardId, float score, string username, Action<bool, string> callback)
         {
             if (string.IsNullOrEmpty(_playerSessionToken))
             {
-                Debug.LogError("[AstenSDK] No hay un token de sesión de jugador activo. Llama a LoginPlayer() primero.");
+                Debug.LogError("[AstenSDK] No active player session token. Call LoginPlayer() first.");
                 callback?.Invoke(false, "No active player token session");
                 return;
             }
 
-            // Sanitizar el JSON
+            // Sanitize the JSON
             string payload = $"{{\"leaderboard_id\":\"{leaderboardId}\", \"score\":{score}, \"username\":\"{username}\"}}";
             StartCoroutine(PostRequestCoroutine("/player/leaderboard/submit", payload, _apiKey, _playerSessionToken, callback));
         }
 
         /// <summary>
-        /// Registra o actualiza la puntuación del jugador en una tabla de clasificación (sin nombre de usuario personalizado).
+        /// Registers or updates the player's score on a leaderboard (without custom username).
         /// </summary>
         public void SubmitScore(string leaderboardId, float score, Action<bool, string> callback)
         {
@@ -32,13 +32,13 @@ namespace AstenBaaS
         }
 
         /// <summary>
-        /// Obtiene el ranking de mejores puntuaciones para una tabla de clasificación.
+        /// Gets the top scores ranking for a leaderboard.
         /// </summary>
         public void GetTopScores(string leaderboardId, int limit, Action<bool, string> callback)
         {
             if (string.IsNullOrEmpty(_playerSessionToken))
             {
-                Debug.LogError("[AstenSDK] No hay un token de sesión de jugador activo. Llama a LoginPlayer() primero.");
+                Debug.LogError("[AstenSDK] No active player session token. Call LoginPlayer() first.");
                 callback?.Invoke(false, "No active player token session");
                 return;
             }

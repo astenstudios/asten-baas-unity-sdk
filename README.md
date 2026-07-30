@@ -3,111 +3,113 @@
 [![Unity Version](https://img.shields.io/badge/Unity-2021.3%2B-blue.svg)](https://unity.com/)
 [![UPM Compatible](https://img.shields.io/badge/UPM-Compatible-brightgreen.svg)](https://docs.unity3d.com/Manual/Packages.html)
 [![Platform](https://img.shields.io/badge/Platform-WebGL%20%7C%20Android%20%7C%20iOS%20%7C%20PC-lightgrey.svg)]()
-[![Discord Community](https://img.shields.io/badge/Discord-Únete%20al%20Servidor-7289da.svg)](https://discord.gg/uttmKWfDNU)
+[![Discord Community](https://img.shields.io/badge/Discord-Join%20Server-7289da.svg)](https://discord.gg/uttmKWfDNU)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)]()
 
-El **SDK oficial de C#** para conectar tus videojuegos de **Unity** con la infraestructura de **Asten BaaS** (Backend-as-a-Service). Diseñado para estudios independientes y desarrolladores profesionales que necesitan autenticación segura, persistencia de datos en la nube (Cloud Saves) y tablas de clasificación globales sin administrar servidores ni escribir código backend.
+The **official C# SDK** to connect your **Unity** games with **Asten BaaS** (Backend-as-a-Service) infrastructure. Designed for indie studios and professional developers who need secure authentication, cloud data persistence (Cloud Saves), and global leaderboards without managing servers or writing backend code.
 
 ---
 
-## 🌟 Características Principales
+## 🌟 Key Features
 
-* ⚡ **Cero Configuración de Servidores:** Olvídate de configurar bases de datos, APIs de AWS o gestionar tokens; el SDK se encarga de todo el ciclo de vida en la nube.
-* 🛡️ **Autenticación Híbrida y Segura:** Soporte para inicio de sesión silencioso/anónimo mediante **Device ID** y registro formal con **Correo Electrónico & Verificación OTP de 6 dígitos**.
-* 🧠 **Cloud Saves con Debouncing Inteligente:** Sistema de guardado en MongoDB Atlas con protección de frecuencia integrada (Cooldown de 3 segundos) para proteger los FPS de tu juego y evitar costosos picos de peticiones en la red.
-* 🏆 **Leaderboards Globales en Tiempo Real:** Registra puntuaciones, consulta tops competitivos y gestiona medallas (🥇🥈🥉) de forma instantánea.
-* 🌐 **100% Compatible con WebGL y Móvil:** Construido sobre `UnityWebRequest` nativo y asíncrono. Funciona de manera impecable en juegos para navegadores (**itch.io, Poki, CrazyGames**), Android, iOS, PC, Mac y Consolas sin bloquear el hilo principal (Main Thread).
-* 📦 **Aislamiento Limpio (`.asmdef`):** Cero advertencias amarillas en la consola y total compatibilidad con paquetes populares como TextMeshPro, Cinemachine o Newtonsoft.Json.
-
----
-
-## 👉 Portal Web Asten BaaS y Obtención de Credenciales
-
-Para comenzar a utilizar este SDK en tu proyecto de Unity, necesitas un **Game ID** y una **API Key**. Puedes generar y administrar todo tu entorno en la nube de forma gratuita desde nuestra consola oficial:
-
-### 🔗 **[Plataforma Web Asten BaaS](https://baas.astenstudios.com)**
-
-### 🔑 Paso a Paso: ¿Cómo obtener tus credenciales en 1 minuto?
-1. **Regístrate o Inicia Sesión:** Entra a [baas.astenstudios.com](https://baas.astenstudios.com) y crea tu cuenta de desarrollador o estudio de videojuegos.
-2. **Crea un Nuevo Videojuego:** En el panel principal de tu cuenta, haz clic en el botón **`+ Crear`** o selecciona **Nuevo Videojuego**.
-3. **Ingresa los Detalles:** Asigna un nombre a tu juego (ej: *My RPG Game*) y una breve descripción. Haz clic en **Crear**.
-4. **Guarda tus Credenciales Seguras:** Al crearse el juego exitosamente, la consola te mostrará una ventana emergente con tus dos credenciales de integración:
-
-   ![Credenciales Generadas en la Consola Asten](Documentation~/Images/web-console-credentials.png)
-
-   * **ID DEL JUEGO (GAME_ID)**: Es el identificador público único de tu videojuego (ej: `9bdc7e8f-7e31-...`). Cópialo usando el botón **`Copiar`**.
-   * **CLAVE API (BEARER TOKEN / API KEY)**: Es tu clave secreta de acceso para autorizar peticiones desde Unity (ej: `astn_live_df74...`).  
-     > ⚠️ **¡ADVERTENCIA DE SEGURIDAD!** Cópiala y guárdala en un gestor de contraseñas o archivo seguro inmediatamente. Por razones de protección, la plataforma **no volverá a mostrar esta clave secreta** una vez que cierres la ventana.
-5. ¡Listo! Con estas dos cadenas de texto ya puedes inicializar el SDK en Unity y dar vida a tu videojuego.
+* ⚡ **Zero Server Configuration:** Forget about configuring databases, AWS APIs, or managing tokens; the SDK handles the entire cloud lifecycle.
+* 🛡️ **Secure Hybrid Authentication:** Support for silent/anonymous login via **Device ID** and formal registration with **Email & 6-Digit OTP Verification**.
+* 🧠 **Cloud Saves with Smart Debouncing:** Built-in MongoDB Atlas save system with rate protection (3-second cooldown) to protect your game's FPS and prevent costly network spikes.
+* 🏆 **Real-Time Global Leaderboards:** Submit scores, query competitive top rankings, and display medals (🥇🥈🥉) instantly.
+* 🌐 **100% WebGL and Mobile Compatible:** Built on top of native, asynchronous `UnityWebRequest`. Works flawlessly in browser games (**itch.io, Poki, CrazyGames**), Android, iOS, PC, Mac, and Consoles without blocking the Main Thread.
+* 📦 **Clean Isolation (`.asmdef`):** Zero yellow console warnings and total compatibility with popular packages like TextMeshPro, Cinemachine, or Newtonsoft.Json.
 
 ---
 
-## 📦 Instalación en Unity (3 Métodos)
+## 👉 Asten BaaS Web Console & Credentials Setup
 
-### Método 1: Unity Package Manager (URL de Git - Recomendado)
-1. En el Editor de Unity, abre **Window** ➔ **Package Manager**.
-2. Haz clic en el botón **`+`** (esquina superior izquierda) y selecciona **Add package from git URL...**
-3. Pega la siguiente URL del repositorio oficial y haz clic en **Add**:
+To start using this SDK in your Unity project, you need a **Game ID** and an **API Key**. You can generate and manage your entire cloud environment for free from our official console:
+
+### 🔗 **[Asten BaaS Web Console](https://baas.astenstudios.com)**
+
+### 🔑 Step-by-Step: How to get your credentials in 1 minute
+
+1. **Sign Up or Log In:** Go to [baas.astenstudios.com](https://baas.astenstudios.com) and create your developer or studio account.
+2. **Create a New Game:** In your main dashboard, click the **`+ Create`** button or select **New Game**.
+3. **Enter Details:** Assign a name to your game (e.g., *My RPG Game*) and a short description. Click **Create**.
+4. **Save Your Credentials Securely:** Once the game is successfully created, the console will show a popup with your two integration credentials:
+
+   ![Generated Credentials in Asten Console](Documentation~/Images/web-console-credentials.png)
+
+   * **GAME ID (GAME_ID)**: The unique public identifier of your game (e.g., `9bdc7e8f-7e31-...`). Copy it using the **`Copy`** button.
+   * **API KEY (BEARER TOKEN / API KEY)**: Your secret access key to authorize requests from Unity (e.g., `astn_live_df74...`).  
+     > ⚠️ **SECURITY WARNING!** Copy and save it in a password manager or secure file immediately. For security reasons, the platform **will not show this secret key again** once you close the window.
+5. You're set! With these two strings, you can initialize the SDK in Unity and bring your game to life.
+
+---
+
+## 📦 Unity Installation (3 Methods)
+
+### Method 1: Unity Package Manager (Git URL - Recommended)
+1. In the Unity Editor, open **Window** ➔ **Package Manager**.
+2. Click the **`+`** button (top-left corner) and select **Add package from git URL...**
+3. Paste the following official repository URL and click **Add**:
    ```text
    https://github.com/astenstudios/asten-baas-unity-sdk.git#v1.0.0
    ```
-   *(Nota: Puedes omitir `#v1.0.0` para descargar siempre la última versión en desarrollo).*
+   *(Note: You can omit `#v1.0.0` to always download the latest development version).*
 
-### Método 2: Archivo `.unitypackage` (Asset Store / Descarga Directa)
-1. Descarga el paquete oficial desde la [Tienda de Unity Asset Store]() o desde la sección de **Releases** en GitHub.
-2. En Unity, abre **Assets** ➔ **Import Package** ➔ **Custom Package...** y selecciona el archivo `.unitypackage`.
+### Method 2: `.unitypackage` File (Asset Store / Direct Download)
+1. Download the official package from the [Unity Asset Store]() or from the **Releases** section on GitHub.
+2. In Unity, open **Assets** ➔ **Import Package** ➔ **Custom Package...** and select the `.unitypackage` file.
 
-### Método 3: Submódulo de Git (Para Desarrolladores Avanzados)
-Si deseas modificar el código fuente dentro de tu propio repositorio de Git:
+### Method 3: Git Submodule (For Advanced Developers)
+If you want to modify the source code inside your own Git repository:
 ```bash
 git submodule add https://github.com/astenstudios/asten-baas-unity-sdk.git Packages/com.astenstudios.baas
 ```
 
 ---
 
-## 🕹️ Escena de Prueba Rápida (1-Click Quickstart Demo)
+## 🕹️ Quickstart Demo Scene (1-Click Setup)
 
-El SDK incluye una escena interactiva orientada a código (`AstenQuickstartDemo.cs`) construida con la interfaz nativa `OnGUI` de Unity. **No requiere configurar lienzos (Canvas), ni instalar TextMeshPro, ni arrastrar prefabs.**
+The SDK includes a code-driven interactive scene (`AstenQuickstartDemo.cs`) built with Unity's native `OnGUI` interface. **No Canvas setup, TextMeshPro installation, or prefab dragging required.**
 
-> ⚠️ **¡IMPORTANTE: ¿Por qué sólo veo la carpeta `Runtime/` al instalar el paquete?**  
-> Al instalar un paquete oficial en Unity Package Manager (UPM), las carpetas de demostración (`Samples~`) se ocultan intencionalmente dentro de `Packages/` para evitar que scripts de prueba compilen en tu proyecto final.  
-> **Para acceder a la Demo y probar el SDK en 3 minutos, sigue estos pasos:**
+> ⚠️ **IMPORTANT: Why do I only see the `Runtime/` folder after installing the package?**  
+> When installing an official package via Unity Package Manager (UPM), sample folders (`Samples~`) are intentionally hidden inside `Packages/` to prevent test scripts from compiling into your final build.  
+> **To access the Demo and test the SDK in 3 minutes, follow these steps:**
 > 
-> 1. En el Editor de Unity, ve a **Window** ➔ **Package Manager**.
-> 2. Selecciona **Asten BaaS SDK** en tu lista de paquetes instalados (o haz clic en la pestaña **All Samples** en el menú izquierdo).
-> 3. Busca **Demo Scene & UI Components** y haz clic en el botón **`Import`**.
-> 4. ¡Listo! Unity importará y copiará los archivos de demostración directamente a tu carpeta de Proyecto bajo:  
+> 1. In Unity Editor, go to **Window** ➔ **Package Manager**.
+> 2. Select **Asten BaaS SDK** in your installed packages list (or click the **All Samples** tab in the left menu).
+> 3. Find **Demo Scene & UI Components** and click the **`Import`** button.
+> 4. Done! Unity will import and copy the sample files directly to your Project folder under:  
 >    👉 **`Assets/Samples/Asten BaaS SDK/1.0.0/Demo Scene & UI Components/`**
-> 5. Abre esa carpeta en tu ventana de Project.
+> 5. Open that folder in your Project window.
 
-### ⚙️ ¿Cómo configurar tus credenciales en la Demo (Paso a Paso a Prueba de Noobs)?
-Para que la escena de demostración se conecte con tus bases de datos y no arroje error, debes asignarle tu **Game ID** y **API Key**:
+### ⚙️ How to configure credentials in the Demo
 
-1. En tu ventana de **Project**, navega a:  
-   👉 `Assets/Samples/Asten BaaS SDK/1.0.0/Demo Scene & UI Components/` y abre la escena **`SampleScene.unity`** (o cualquier escena en blanco).
-2. En tu ventana de **Hierarchy** (Jerarquía de la escena), haz clic en el objeto que tenga el script demo (o crea un objeto vacío con `Clic Derecho ➔ Create Empty` y llámalo `AstenDemo`).
-3. **Arrastra y suelta** el archivo de script **`AstenQuickstartDemo.cs`** desde la ventana de Project hacia el panel **Inspector** de ese objeto (o haz clic en el botón `Add Component` y busca *Asten Quickstart Demo*).
-4. En el Inspector del componente, verás los campos para colocar tus credenciales:
+To connect the demo scene with your cloud databases, assign your **Game ID** and **API Key**:
 
-   ![Configuración del Inspector en Unity](Documentation~/Images/inspector-config.png)
+1. In your **Project** window, navigate to:  
+   👉 `Assets/Samples/Asten BaaS SDK/1.0.0/Demo Scene & UI Components/` and open **`SampleScene.unity`** (or any empty scene).
+2. In your **Hierarchy** window, click the object with the demo script (or create an empty GameObject via `Right Click ➔ Create Empty` and name it `AstenDemo`).
+3. **Drag and drop** the script file **`AstenQuickstartDemo.cs`** from the Project window into the **Inspector** panel of that object (or click `Add Component` and search for *Asten Quickstart Demo*).
+4. In the component Inspector, you will see fields to enter your credentials:
 
-5. Rellena los dos campos obligatorios:
-   * **Game Id**: Pega el identificador de tu videojuego (puedes copiarlo desde tu panel en la [Consola Web Asten BaaS](https://baas.astenstudios.com)).
-   * **Api Key**: Pega tu clave API secreta de entorno Sandbox o Producción (ej: `astn_live_...`).
-6. ¡Listo! Presiona el botón **Play ▶️** en el Editor de Unity y verás la consola visual conectada con la nube.
+   ![Unity Inspector Configuration](Documentation~/Images/inspector-config.png)
 
-### 🎮 Pestañas Interactivas de la Demo
-Al presionar **Play ▶️** con tus credenciales configuradas, el panel de control te permitirá interactuar con 3 pestañas en tiempo real:
-* **`[ 🎨 Perfil Visual ]`**: Muestra tu ID único de jugador, JWT abreviado, monedas en la nube y nivel actual.
-   * **`[ 🏆 Top 5 Ranking ]`**: Consulta en vivo la tabla global con medallas de primero, segundo y tercer lugar.
-   * **`[ 💻 JSON Técnico ]`**: Inspecciona las respuestas crudas del servidor para depuración técnica.
+5. Fill in the two required fields:
+   * **Game Id**: Paste your game identifier (copy it from your dashboard in the [Asten BaaS Web Console](https://baas.astenstudios.com)).
+   * **Api Key**: Paste your secret API Key for Sandbox or Production (e.g., `astn_live_...`).
+6. Press **Play ▶️** in the Unity Editor and watch the visual console connect to the cloud.
+
+### 🎮 Interactive Demo Tabs
+When running **Play ▶️** with configured credentials, the control panel lets you interact with 3 real-time tabs:
+* **`[ 🎨 Visual Profile ]`**: Displays your unique player ID, truncated JWT, cloud coins, and current level.
+* **`[ 🏆 Top 5 Ranking ]`**: Live view of the global leaderboard with 1st, 2nd, and 3rd place medals.
+* **`[ 💻 Technical JSON ]`**: Inspect raw server responses for technical debugging.
 
 ---
 
-## 🛠️ Guía de Integración Paso a Paso
+## 🛠️ Integration Guide
 
-### 1. Inicialización del SDK
-Antes de llamar a cualquier función de autenticación o guardado, debes inicializar el singleton `AstenSDK.Instance` al arrancar tu juego (por ejemplo, en un script `GameManager.cs` o en tu escena de carga principal):
+### 1. SDK Initialization
+Before calling any authentication or save functions, initialize the `AstenSDK.Instance` singleton when your game starts (e.g., in a `GameManager.cs` script or your main loading scene):
 
 ```csharp
 using UnityEngine;
@@ -117,141 +119,141 @@ public class GameManager : MonoBehaviour
 {
     void Awake()
     {
-        string gameId = "TU_GAME_ID_AQUÍ";
-        string apiKey = "astn_live_TU_CLAVE_API_AQUÍ";
+        string gameId = "YOUR_GAME_ID_HERE";
+        string apiKey = "astn_live_YOUR_API_KEY_HERE";
         
-        // Opcional: Especificar servidor custom (por defecto apunta a la nube global de Asten)
+        // Optional: Specify custom server URL (defaults to Asten global cloud)
         string backendUrl = "https://api.baas.astenstudios.com";
 
-        // Inicializar el motor de Asten BaaS
+        // Initialize Asten BaaS engine
         AstenSDK.Instance.Initialize(gameId, apiKey, backendUrl);
-        Debug.Log("🚀 Asten SDK listo para usar.");
+        Debug.Log("🚀 Asten SDK ready to use.");
     }
 }
 ```
 
 ---
 
-### 2. Autenticación de Jugadores (`AstenSDK.Auth`)
-El SDK gestiona de manera transparente el estado de la sesión. Una vez autenticado el usuario, el **Player Session Token (JWT)** se almacena en memoria y se inyecta en todas las cabeceras HTTP de forma automática.
+### 2. Player Authentication (`AstenSDK.Auth`)
+The SDK manages session state transparently. Once authenticated, the **Player Session Token (JWT)** is stored in memory and injected into all HTTP headers automatically.
 
-#### 🎮 Inicio de Sesión Anónimo (Device ID - Ideal para Onboarding Rápido)
-Registra e inicia sesión de forma silenciosa la primera vez que un jugador abre tu videojuego:
+#### 🎮 Anonymous Login (Device ID - Recommended for Fast Onboarding)
+Registers and logs in silently the first time a player opens your game:
 ```csharp
 AstenSDK.Instance.LoginWithDeviceId((success, response) =>
 {
     if (success)
     {
-        Debug.Log($"✅ Sesión de invitado activa. Player ID: {AstenSDK.Instance.ActivePlayerId}");
+        Debug.Log($"✅ Guest session active. Player ID: {AstenSDK.Instance.ActivePlayerId}");
     }
     else
     {
-        Debug.LogError($"❌ Error al entrar como invitado: {response}");
+        Debug.LogError($"❌ Guest login failed: {response}");
     }
 });
 ```
 
-#### 📧 Registro de Cuenta y Verificación OTP de 6 Dígitos
-Para evitar cuentas falsas o spam, nuestro backend envía un código de seguridad OTP al correo del usuario al momento de registrarse:
+#### 📧 Account Registration and 6-Digit OTP Verification
+To prevent fake accounts or spam, our backend sends a 6-digit OTP security code to the user's email upon registration:
 ```csharp
-// 1. Solicitar registro (envía un correo con código de 6 dígitos al usuario)
-AstenSDK.Instance.RegisterPlayer("jugador@studio.com", "miPasswordSeguro123!", (success, response) =>
+// 1. Request registration (sends an email with a 6-digit code to the user)
+AstenSDK.Instance.RegisterPlayer("player@studio.com", "mySecurePassword123!", (success, response) =>
 {
     if (success)
     {
-        Debug.Log("📬 Registro creado. Por favor revisa tu correo por el código de verificación.");
+        Debug.Log("📬 Registration created. Please check your email for the verification code.");
     }
 });
 
-// 2. Verificar código OTP (activa la cuenta e inicia sesión inmediatamente)
-string codigoOtp = "123456"; // Código ingresado por el jugador en un InputField
-AstenSDK.Instance.VerifyPlayerEmail("jugador@studio.com", codigoOtp, (success, response) =>
+// 2. Verify OTP code (activates account and logs in immediately)
+string otpCode = "123456"; // Code entered by the player in an InputField
+AstenSDK.Instance.VerifyPlayerEmail("player@studio.com", otpCode, (success, response) =>
 {
     if (success)
     {
-        Debug.Log($"✅ ¡Correo verificado! Sesión activa. JWT: {AstenSDK.Instance.PlayerSessionToken}");
-    }
-});
-```
-
-#### 🔑 Inicio de Sesión Clásico con Correo y Contraseña
-Para jugadores que regresan desde otro dispositivo o cerraron sesión previamente:
-```csharp
-AstenSDK.Instance.LoginPlayer("jugador@studio.com", "miPasswordSeguro123!", (success, response) =>
-{
-    if (success)
-    {
-        Debug.Log("✅ ¡Bienvenido de vuelta!");
+        Debug.Log($"✅ Email verified! Session active. JWT: {AstenSDK.Instance.PlayerSessionToken}");
     }
 });
 ```
 
-#### 🚪 Cerrar Sesión (Logout)
+#### 🔑 Classic Login with Email and Password
+For returning players logging in from another device or previously logged out:
 ```csharp
-AstenSDK.Instance.Logout(); // Limpia el ID y Token JWT en memoria
+AstenSDK.Instance.LoginPlayer("player@studio.com", "mySecurePassword123!", (success, response) =>
+{
+    if (success)
+    {
+        Debug.Log("✅ Welcome back!");
+    }
+});
+```
+
+#### 🚪 Log Out
+```csharp
+AstenSDK.Instance.Logout(); // Clears Player ID and JWT Token from memory
 ```
 
 ---
 
-### 3. Persistencia de Datos en la Nube (`AstenSDK.CloudSaves`)
+### 3. Cloud Data Persistence (`AstenSDK.CloudSaves`)
 
-Asten BaaS te permite serializar y guardar en MongoDB Atlas cualquier clase o estructura de C# utilizando `JsonUtility`.
+Asten BaaS allows you to serialize and save any C# class or struct to MongoDB Atlas using `JsonUtility`.
 
-> **💡 Protección de Debouncing Integrada (Cooldown de 3 Segundos):**  
-> Si tu código de juego intenta llamar a `SavePlayerData()` en un bucle rápido o varias veces por segundo (ej. al recoger monedas en un nivel), **el SDK encola inteligentemente la petición** y espera a que transcurran 3 segundos de inactividad antes de enviarla a la red. Esto garantiza un rendimiento máximo a 60+ FPS sin causar tirones (stuttering) ni saturar tu cuota de servidor.
+> **💡 Built-in Debounce Protection (3-Second Cooldown):**  
+> If your game code calls `SavePlayerData()` in a rapid loop (e.g., picking up coins in a level), **the SDK intelligently queues the request** and waits for 3 seconds of inactivity before sending it over the network. This guarantees peak performance at 60+ FPS without stuttering or saturating your server quota.
 
-#### 💾 Guardar Progreso del Jugador
+#### 💾 Save Player Progress
 ```csharp
 [System.Serializable]
-public class DatosDePartida
+public class SaveData
 {
-    public int nivelActual;
-    public int monedasNube;
-    public string armaEquipada;
-    public float[] posicionUltimoCheckpoint;
+    public int currentLevel;
+    public int cloudCoins;
+    public string equippedWeapon;
+    public float[] lastCheckpointPosition;
 }
 
-public void GuardarEnNube()
+public void SaveToCloud()
 {
-    DatosDePartida misDatos = new DatosDePartida
+    SaveData myData = new SaveData
     {
-        nivelActual = 15,
-        monedasNube = 2500,
-        armaEquipada = "Espada Excalibur",
-        posicionUltimoCheckpoint = new float[] { 10.5f, 2.0f, -4.3f }
+        currentLevel = 15,
+        cloudCoins = 2500,
+        equippedWeapon = "Excalibur Sword",
+        lastCheckpointPosition = new float[] { 10.5f, 2.0f, -4.3f }
     };
 
-    AstenSDK.Instance.SavePlayerData(misDatos, (success, response) =>
+    AstenSDK.Instance.SavePlayerData(myData, (success, response) =>
     {
         if (success)
         {
-            Debug.Log("☁️ Progreso guardado con éxito en MongoDB Atlas.");
+            Debug.Log("☁️ Progress saved successfully to MongoDB Atlas.");
         }
         else
         {
-            Debug.LogWarning("⏳ Error o petición en enfriamiento (Debounced): " + response);
+            Debug.LogWarning("⏳ Error or request debounced (cooling down): " + response);
         }
     });
 }
 ```
 
-#### 📥 Cargar Progreso desde la Nube
+#### 📥 Load Progress from Cloud
 ```csharp
-public void CargarDesdeNube()
+public void LoadFromCloud()
 {
     AstenSDK.Instance.LoadPlayerData((success, jsonResponse) =>
     {
         if (success)
         {
-            Debug.Log("☁️ JSON descargado: " + jsonResponse);
+            Debug.Log("☁️ Downloaded JSON: " + jsonResponse);
             
-            // Convertir de vuelta a nuestra clase C#
-            DatosDePartida datosCargados = JsonUtility.FromJson<DatosDePartida>(jsonResponse);
-            Debug.Log($"Monedas recuperadas: {datosCargados.monedasNube}");
+            // Deserialize back to C# class
+            SaveData loadedData = JsonUtility.FromJson<SaveData>(jsonResponse);
+            Debug.Log($"Retrieved coins: {loadedData.cloudCoins}");
         }
         else
         {
-            Debug.LogError("❌ No se pudo descargar la partida: " + jsonResponse);
+            Debug.LogError("❌ Failed to download save data: " + jsonResponse);
         }
     });
 }
@@ -259,77 +261,77 @@ public void CargarDesdeNube()
 
 ---
 
-### 4. Tablas de Clasificación Globales (`AstenSDK.Leaderboards`)
+### 4. Global Leaderboards (`AstenSDK.Leaderboards`)
 
-Crea competencias, gestiona puntuaciones altas y muestra rankings en vivo en cualquier plataforma.
-> **Nota de Backend:** Por defecto, al crear un nuevo videojuego en el portal de Asten BaaS, se genera automáticamente una tabla de clasificación principal con el ID oficial: **`"leaderboard_score"`**. Puedes crear tablas personalizadas (ej. `"ranking_pvp"`, `"carreras_tiempo"`) desde la consola web.
+Create competitions, manage high scores, and display live rankings on any platform.
+> **Backend Note:** By default, creating a new game in the Asten BaaS portal automatically generates a main leaderboard with the ID: **`"leaderboard_score"`**. You can create custom leaderboards (e.g., `"ranking_pvp"`, `"time_attack"`) from the web console.
 
-#### 🏆 Publicar un Récord
-El servidor cuenta con protección nativa de **High Score**: solo sobrescribirá el puntaje en la base de datos si el nuevo número supera al récord registrado previamente por el jugador.
+#### 🏆 Submit a Score
+The server features native **High Score** protection: it will only overwrite the score in the database if the new value is higher than the player's previous record.
 ```csharp
-string leaderboardId = "leaderboard_score"; // ID de la tabla en tu consola
-int puntosObtenidos = 9850;
-string nombreEnPantalla = "ProGamer_2026";
+string leaderboardId = "leaderboard_score"; // Leaderboard ID in your console
+int score = 9850;
+string displayName = "ProGamer_2026";
 
-AstenSDK.Instance.SubmitScore(leaderboardId, puntosObtenidos, nombreEnPantalla, (success, response) =>
+AstenSDK.Instance.SubmitScore(leaderboardId, score, displayName, (success, response) =>
 {
     if (success)
     {
-        Debug.Log("🏆 ¡Récord evaluado y publicado en la tabla global!");
+        Debug.Log("🏆 Score evaluated and posted to global leaderboard!");
     }
 });
 ```
 
-#### 🥇 Consultar el Top Ranking (Mejores Puntuaciones)
-Descarga la lista descendente de los mejores jugadores para renderizarla en tu interfaz:
+#### 🥇 Get Top Ranking
+Download the descending list of top players to render in your UI:
 ```csharp
-int limiteResultados = 10; // Top 10 jugadores
+int topLimit = 10; // Top 10 players
 
-AstenSDK.Instance.GetTopScores("leaderboard_score", limiteResultados, (success, jsonResponse) =>
+AstenSDK.Instance.GetTopScores("leaderboard_score", topLimit, (success, jsonResponse) =>
 {
     if (success)
     {
-        Debug.Log("📊 Top Ranking recibido: " + jsonResponse);
-        // Puedes iterar sobre las puntuaciones y mostrarlas con medallas en tu UI
+        Debug.Log("📊 Top Ranking received: " + jsonResponse);
+        // You can iterate over scores and render them with medals in your UI
     }
 });
 ```
 
 ---
 
-## 🔍 Inspección de Estado en Tiempo Real (Propiedades Públicas)
-En cualquier momento durante la ejecución de tu juego, puedes acceder a las propiedades públicas de sesión desde tu código para verificar el estado de la conexión:
+## 🔍 Real-Time State Inspection (Public Properties)
+At any point during game execution, you can check public session properties to verify connection status:
 ```csharp
-// Verificar si hay un jugador conectado
+// Check if player is logged in
 if (AstenSDK.Instance.IsLoggedIn)
 {
-    string idJugador = AstenSDK.Instance.ActivePlayerId;     // UUID en MongoDB
-    string tokenJwt  = AstenSDK.Instance.PlayerSessionToken; // Token de seguridad activo
-    Debug.Log($"Jugador logueado con ID: {idJugador}");
+    string playerId = AstenSDK.Instance.ActivePlayerId;     // MongoDB UUID
+    string jwtToken = AstenSDK.Instance.PlayerSessionToken; // Active security token
+    Debug.Log($"Logged in player ID: {playerId}");
 }
 ```
 
 ---
 
-## 🏛️ Arquitectura y Buenas Prácticas
+## 🏛️ Architecture & Best Practices
 
-1. **Sin Bloqueo del Hilo Principal (Main Thread Unblocking):** Todas las operaciones de red están encapsuladas en corrutinas asíncronas optimizadas bajo `UnityWebRequest`. En pruebas de rendimiento extremas (Stress Testing), el SDK mantiene una estabilidad superior a **300+ FPS** sin generar tirones ni recolectar basura de forma agresiva (Zero-Allocation practices).
-2. **Compatibilidad con WebGL:** Al evitar sockets web pesados o librerías que dependen de `System.Net.Sockets` directos, el SDK es ideal para exportaciones en HTML5/WebGL.
-3. **Manejo Resiliente de Errores (Offline/No-WiFi):** Si el jugador pierde su conexión a internet o el servidor responde con un código HTTP de error (`400 Bad Request`, `401 Unauthorized`), el SDK captura la excepción limpiamente e invoca tu callback con el mensaje legible para el usuario, sin crashear el juego ni arrojar excepciones en la consola.
+1. **Main Thread Unblocking:** All network operations are encapsulated in optimized asynchronous coroutines using `UnityWebRequest`. Under heavy stress testing, the SDK maintains **300+ FPS** stability with zero aggressive garbage collection (Zero-Allocation practices).
+2. **WebGL Compatibility:** By avoiding heavy web sockets or direct `System.Net.Sockets` dependencies, the SDK is ideal for HTML5/WebGL builds.
+3. **Resilient Error Handling (Offline/No-WiFi):** If internet connection is lost or the server returns an HTTP error (`400 Bad Request`, `401 Unauthorized`), the SDK captures the exception cleanly and invokes your callback with a user-readable error message without crashing the game or throwing uncaught console exceptions.
 
 ---
 
-## 💬 Comunidad, Soporte y Contribuciones
+## 💬 Community, Support & Contributions
 
-* 💬 **Servidor de Discord Oficial**: Únete a nuestra comunidad activa de desarrolladores, haz preguntas técnicas y comparte tus juegos en:  
+* 💬 **Official Discord Server**: Join our active developer community, ask technical questions, and share your games at:  
   👉 **[https://discord.gg/uttmKWfDNU](https://discord.gg/uttmKWfDNU)**
-* 📧 **Soporte Técnico Directo**: Escríbenos a **support@astenstudios.com** si necesitas asistencia personalizada o tienes problemas técnicos con tu integración.
-* 🌐 **Plataforma Web**: [https://baas.astenstudios.com](https://baas.astenstudios.com)
-* 🐛 **Reporte de Errores e Issues**: Si encuentras algún comportamiento inesperado, abre un [Issue en GitHub](https://github.com/astenstudios/asten-baas-unity-sdk/issues) o contáctanos directamente por Discord.
+* 📧 **Direct Technical Support**: Email us at **support@astenstudios.com** for 1-on-1 assistance or integration issues.
+* 🌐 **Web Platform**: [https://baas.astenstudios.com](https://baas.astenstudios.com)
+* 🐛 **Bug Reports & Issues**: Open an [Issue on GitHub](https://github.com/astenstudios/asten-baas-unity-sdk/issues) or reach out on Discord.
 
 ---
 
 <p align="center">
   <b>Asten Studios © 2026</b><br>
-  <i>Infraestructura backend de próxima generación para videojuegos hechos en Unity.</i>
+  <i>Next-generation backend infrastructure for Unity games.</i>
 </p>

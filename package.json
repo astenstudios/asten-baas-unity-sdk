@@ -2,7 +2,7 @@
   "name": "com.astenstudios.baas",
   "version": "1.0.0",
   "displayName": "Asten BaaS SDK",
-  "description": "SDK oficial de Unity para conectar tu juego con la infraestructura de Asten BaaS (Cloud Saves, Autenticación y Persistencia).",
+  "description": "Official Unity SDK to connect your game with Asten BaaS infrastructure (Cloud Saves, Authentication, and Persistence).",
   "unity": "2021.3",
   "author": {
     "name": "Asten Studios",
@@ -22,7 +22,7 @@
   "samples": [
     {
       "displayName": "Demo Scene & UI Components",
-      "description": "Escena interactiva con componentes de UI orientados a código para probar Cloud Saves, Autenticación y Leaderboards Globales.",
+      "description": "Interactive scene with code-driven UI components to test Cloud Saves, Authentication, and Global Leaderboards.",
       "path": "Samples~/DemoScene"
     }
   ]
