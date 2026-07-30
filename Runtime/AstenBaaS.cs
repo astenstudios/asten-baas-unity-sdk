@@ -23,50 +23,50 @@ namespace AstenBaaS
             }
         }
 
-        private string _backendUrl = "https://api.baas.astenstudios.com"; // URL de producción por defecto (configurable en Initialize)
+        private string _backendUrl = "https://api.baas.astenstudios.com"; // Default production URL (configurable in Initialize)
         private string _gameId;
         private string _apiKey;
         private string _activePlayerId;
-        private string _playerSessionToken; // Almacena el JWT del jugador verificado
+        private string _playerSessionToken; // Stores the verified player's JWT
 
         public string ActivePlayerId => _activePlayerId;
         public string PlayerSessionToken => _playerSessionToken;
         public bool IsLoggedIn => !string.IsNullOrEmpty(_playerSessionToken) || !string.IsNullOrEmpty(_activePlayerId);
 
-        // Variables para el control de guardados (Debounce / Cooldown)
-        private float _saveCooldown = 3.0f; // Tiempo mínimo de espera entre peticiones de guardado (segundos)
+        // Variables for save control (Debounce / Cooldown)
+        private float _saveCooldown = 3.0f; // Minimum wait time between save requests (seconds)
         private float _lastSaveTime = -999f;
         private string _pendingSaveData;
         private Action<bool, string> _pendingSaveCallback;
         private Coroutine _pendingSaveCoroutine;
 
         /// <summary>
-        /// Inicializa el SDK de Asten BaaS con las credenciales del juego.
+        /// Initializes the Asten BaaS SDK with the game credentials.
         /// </summary>
         private bool _isInitialized = false;
         public void Initialize(string gameId, string apiKey, string backendUrl = null)
         {
-            Debug.Log("[AstenSDK] Inicializando Asten BaaS SDK...");
+            Debug.Log("[AstenSDK] Initializing Asten BaaS SDK...");
             Debug.Log($"[AstenSDK] Game ID: {gameId}");
             Debug.Log($"[AstenSDK] API Key: {apiKey}");
             if (_isInitialized)
             {
-                Debug.LogWarning("[AstenSDK] El SDK ya se encuentra inicializado.");
+                Debug.LogWarning("[AstenSDK] The SDK is already initialized.");
                 return;
             }
 
-            // 1. Validación de Game ID
+            // 1. Game ID validation
             if (string.IsNullOrWhiteSpace(gameId))
             {
-                Debug.LogError("[AstenSDK] Error de inicialización: 'gameId' es nulo o está vacío.");
-                throw new ArgumentException("El gameId es obligatorio.", nameof(gameId));
+                Debug.LogError("[AstenSDK] Initialization error: 'gameId' is null or empty.");
+                throw new ArgumentException("The gameId is required.", nameof(gameId));
             }
 
-            // 2. Validación de API Key
+            // 2. API Key validation
             if (string.IsNullOrWhiteSpace(apiKey))
             {
-                Debug.LogError("[AstenSDK] Error de inicialización: 'apiKey' es nula o está vacía.");
-                throw new ArgumentException("El apiKey es obligatorio.", nameof(apiKey));
+                Debug.LogError("[AstenSDK] Initialization error: 'apiKey' is null or empty.");
+                throw new ArgumentException("The apiKey is required.", nameof(apiKey));
             }
 
             if (!string.IsNullOrWhiteSpace(backendUrl))
@@ -78,12 +78,12 @@ namespace AstenBaaS
             _apiKey = apiKey;
             _isInitialized = true;
 
-            Debug.Log($"[AstenSDK] Inicializado correctamente para el Juego ID: {_gameId} | Servidor: {_backendUrl}");
+            Debug.Log($"[AstenSDK] Initialized successfully for Game ID: {_gameId} | Server: {_backendUrl}");
         }
 
 
         /// <summary>
-        /// Establece la sesión activa del jugador manualmente (usando ID y Token).
+        /// Manually sets the active player session (using ID and Token).
         /// </summary>
         public void SetPlayerSession(string playerId, string playerToken = null)
         {

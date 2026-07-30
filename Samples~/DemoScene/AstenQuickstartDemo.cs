@@ -4,50 +4,50 @@ using AstenBaaS;
 namespace AstenBaaS.Samples
 {
     /// <summary>
-    /// Demostración rápida (Quickstart) orientada 100% a código utilizando OnGUI.
-    /// No requiere configuración manual de Canvas, TextMeshPro o prefabs de UI.
-    /// Funciona con solo presionar Play en Unity Editor y cubre todos los flujos de autenticación.
+    /// Quickstart 100% code-driven demo using OnGUI.
+    /// Requires no manual Canvas, TextMeshPro, or UI prefab configuration.
+    /// Works out of the box by clicking Play in Unity Editor and covers all authentication flows.
     /// </summary>
     public class AstenQuickstartDemo : MonoBehaviour
     {
-        [Header("Configuración de Asten BaaS")]
-        [Tooltip("ID de tu juego en la consola Asten (Sandbox/Demo por defecto)")]
+        [Header("Asten BaaS Configuration")]
+        [Tooltip("Your Game ID from the Asten console (Default Sandbox/Demo)")]
         public string gameId = "";
         
-        [Tooltip("API Key de tu entorno Sandbox o Producción")]
+        [Tooltip("Your Sandbox or Production API Key")]
         public string apiKey = "";
 
-        // Modo de autenticación en la UI
-        private int _authTab = 0; // 0: Invitado (Device ID), 1: Correo & OTP
-        private int _viewTab = 0; // 0: Perfil Visual, 1: Top Leaderboard, 2: JSON Técnico
-        private string _leaderboardSummary = "💡 <i>Haz clic en 'Consultar Top 5' o 'Publicar Récord' para descargar el ranking global en tiempo real.</i>";
+        // UI Authentication Mode
+        private int _authTab = 0; // 0: Guest (Device ID), 1: Email & OTP
+        private int _viewTab = 0; // 0: Visual Profile, 1: Top Leaderboard, 2: Technical JSON
+        private string _leaderboardSummary = "💡 <i>Click 'Get Top 5' or 'Submit Score' to download the real-time global ranking.</i>";
         private string _emailInput = "test@email.com";
         private string _passwordInput = "";
         private string _otpInput = "";
 
-        // Estado del SDK
-        private string _statusMessage = "🟡 SDK Desconectado. Selecciona un método de autenticación.";
+        // SDK State
+        private string _statusMessage = "🟡 SDK Disconnected. Select an authentication method.";
         private bool _isLoggedIn = false;
-        private string _activeProvider = "Ninguno";
+        private string _activeProvider = "None";
 
-        // Datos de ejemplo en memoria
+        // Memory Sample Data
         private int _playerCoins = 1000;
         private int _playerLevel = 1;
-        private string _lastServerResponse = "Ninguna petición enviada todavía.";
+        private string _lastServerResponse = "No requests sent yet.";
 
         void Start()
         {
-            // Inicializamos el SDK al arrancar
+            // Initialize SDK on startup
             AstenSDK.Instance.Initialize(gameId, apiKey);
-            _statusMessage = "🟢 SDK Inicializado. Elige cómo deseas entrar:";
+            _statusMessage = "🟢 SDK Initialized. Choose how you want to log in:";
         }
 
-        #region Flujos de Autenticación
+        #region Authentication Flows
 
         private void LoginGuest()
         {
-            _statusMessage = "🔄 Conectando como Invitado (Device ID)...";
-            _lastServerResponse = "Enviando petición a /player/auth...";
+            _statusMessage = "🔄 Connecting as Guest (Device ID)...";
+            _lastServerResponse = "Sending request to /player/auth...";
 
             AstenSDK.Instance.LoginWithDeviceId((success, response) =>
             {
@@ -55,96 +55,96 @@ namespace AstenBaaS.Samples
                 {
                     _isLoggedIn = true;
                     _activeProvider = "Device ID (Guest)";
-                    _statusMessage = "🟢 Autenticado con éxito (Guest / Device ID). Sincronizando nube...";
+                    _statusMessage = "🟢 Authenticated successfully (Guest / Device ID). Syncing cloud...";
                     _lastServerResponse = response;
                     _playerCoins = 100;
                     _playerLevel = 1;
                     LoadSampleProgress();
-                    Debug.Log("✅ [AstenQuickstart] Autenticación de invitado completada con éxito.");
+                    Debug.Log("✅ [AstenQuickstart] Guest authentication completed successfully.");
                 }
                 else
                 {
                     _isLoggedIn = false;
-                    _statusMessage = "🔴 Error al conectar como invitado.";
+                    _statusMessage = "🔴 Error connecting as guest.";
                     _lastServerResponse = response;
-                    Debug.LogError($"❌ [AstenQuickstart] Error en LoginGuest: {response}");
+                    Debug.LogError($"❌ [AstenQuickstart] LoginGuest error: {response}");
                 }
             });
         }
 
         private void RegisterWithEmail()
         {
-            _statusMessage = "🔄 Registrando jugador y solicitando código OTP...";
-            _lastServerResponse = $"Registrando {_emailInput} en el servidor...";
+            _statusMessage = "🔄 Registering player and requesting OTP code...";
+            _lastServerResponse = $"Registering {_emailInput} on server...";
 
             AstenSDK.Instance.RegisterPlayer(_emailInput, _passwordInput, (success, response) =>
             {
                 if (success)
                 {
-                    _statusMessage = "📬 ¡Registro exitoso! Revisa tu correo o usa el OTP maestro '123456' en Sandbox.";
+                    _statusMessage = "📬 Registration successful! Check your email or use master OTP '123456' in Sandbox.";
                     _lastServerResponse = response;
-                    Debug.Log("📬 [AstenQuickstart] Registro de correo completado. Esperando validación OTP.");
+                    Debug.Log("📬 [AstenQuickstart] Email registration completed. Awaiting OTP verification.");
                 }
                 else
                 {
-                    _statusMessage = "🔴 Error al registrar cuenta por correo.";
+                    _statusMessage = "🔴 Error registering account with email.";
                     _lastServerResponse = response;
-                    Debug.LogError($"❌ [AstenQuickstart] Error en Registro: {response}");
+                    Debug.LogError($"❌ [AstenQuickstart] Registration error: {response}");
                 }
             });
         }
 
         private void VerifyEmailOTP()
         {
-            _statusMessage = "🔄 Verificando código OTP de 6 dígitos...";
-            _lastServerResponse = $"Verificando OTP '{_otpInput}' para {_emailInput}...";
+            _statusMessage = "🔄 Verifying 6-digit OTP code...";
+            _lastServerResponse = $"Verifying OTP '{_otpInput}' for {_emailInput}...";
 
             AstenSDK.Instance.VerifyPlayerEmail(_emailInput, _otpInput, (success, response) =>
             {
                 if (success)
                 {
                     _isLoggedIn = true;
-                    _activeProvider = "Correo Verificado";
-                    _statusMessage = "🟢 ¡Correo verificado y sesión activa! Sincronizando nube...";
+                    _activeProvider = "Verified Email";
+                    _statusMessage = "🟢 Email verified and session active! Syncing cloud...";
                     _lastServerResponse = response;
                     _playerCoins = 100;
                     _playerLevel = 1;
                     LoadSampleProgress();
-                    Debug.Log("✅ [AstenQuickstart] Verificación OTP exitosa y sesión activa.");
+                    Debug.Log("✅ [AstenQuickstart] OTP verification successful and session active.");
                 }
                 else
                 {
-                    _statusMessage = "🔴 Código OTP incorrecto o expirado.";
+                    _statusMessage = "🔴 Incorrect or expired OTP code.";
                     _lastServerResponse = response;
-                    Debug.LogError($"❌ [AstenQuickstart] Error en Verificación OTP: {response}");
+                    Debug.LogError($"❌ [AstenQuickstart] OTP Verification error: {response}");
                 }
             });
         }
 
         private void LoginWithEmail()
         {
-            _statusMessage = "🔄 Iniciando sesión con correo...";
-            _lastServerResponse = $"Autenticando {_emailInput}...";
+            _statusMessage = "🔄 Logging in with email...";
+            _lastServerResponse = $"Authenticating {_emailInput}...";
 
             AstenSDK.Instance.LoginPlayer(_emailInput, _passwordInput, (success, response) =>
             {
                 if (success)
                 {
                     _isLoggedIn = true;
-                    _activeProvider = "Correo Electrónico";
-                    _statusMessage = "🟢 Inicio de sesión exitoso. Sincronizando nube...";
+                    _activeProvider = "Email Address";
+                    _statusMessage = "🟢 Login successful. Syncing cloud...";
                     _lastServerResponse = response;
                     _playerCoins = 100;
                     _playerLevel = 1;
                     LoadSampleProgress();
-                    Debug.Log("✅ [AstenQuickstart] Sesión de correo iniciada exitosamente.");
+                    Debug.Log("✅ [AstenQuickstart] Email session logged in successfully.");
                 }
                 else
                 {
                     _isLoggedIn = false;
-                    _statusMessage = "🔴 Error en login: Credenciales inválidas o correo no verificado.";
+                    _statusMessage = "🔴 Login error: Invalid credentials or unverified email.";
                     _lastServerResponse = response;
-                    Debug.LogError($"❌ [AstenQuickstart] Error en Login de correo: {response}");
+                    Debug.LogError($"❌ [AstenQuickstart] Email Login error: {response}");
                 }
             });
         }
@@ -153,17 +153,17 @@ namespace AstenBaaS.Samples
         {
             AstenSDK.Instance.Logout();
             _isLoggedIn = false;
-            _activeProvider = "Ninguno";
+            _activeProvider = "None";
             _playerCoins = 0;
             _playerLevel = 1;
-            _leaderboardSummary = "💡 <i>Haz clic en 'Consultar Top 5' o 'Publicar Récord' para descargar el ranking global en tiempo real.</i>";
-            _statusMessage = "🟡 Sesión cerrada. Selecciona un método para entrar.";
-            _lastServerResponse = "Sesión cerrada localmente.";
+            _leaderboardSummary = "💡 <i>Click 'Get Top 5' or 'Submit Score' to download the real-time global ranking.</i>";
+            _statusMessage = "🟡 Logged out. Select a method to enter.";
+            _lastServerResponse = "Session logged out locally.";
         }
 
         #endregion
 
-        #region Progresión y Datos en Nube
+        #region Progression & Cloud Data
 
         [System.Serializable]
         public class SampleSaveData
@@ -178,7 +178,7 @@ namespace AstenBaaS.Samples
         {
             if (!_isLoggedIn) return;
 
-            _statusMessage = "🔄 Guardando partida en la nube...";
+            _statusMessage = "🔄 Saving game progress to the cloud...";
             _playerCoins += 250;
             _playerLevel++;
 
@@ -186,7 +186,7 @@ namespace AstenBaaS.Samples
             {
                 coins = _playerCoins,
                 level = _playerLevel,
-                weapon = "Espada de Acero",
+                weapon = "Steel Sword",
                 timestamp = System.DateTime.UtcNow.ToString("o")
             };
 
@@ -194,13 +194,13 @@ namespace AstenBaaS.Samples
             {
                 if (success)
                 {
-                    _statusMessage = $"✅ Progreso guardado! Nivel: {_playerLevel} | Monedas: {_playerCoins}";
+                    _statusMessage = $"✅ Progress saved! Level: {_playerLevel} | Coins: {_playerCoins}";
                     _lastServerResponse = response;
-                    Debug.Log($"✅ [AstenQuickstart] Partida guardada en MongoDB Atlas: {response}");
+                    Debug.Log($"✅ [AstenQuickstart] Save game saved to MongoDB Atlas: {response}");
                 }
                 else
                 {
-                    _statusMessage = "🔴 Error al guardar partida en el servidor.";
+                    _statusMessage = "🔴 Error saving game to server.";
                     _lastServerResponse = response;
                 }
             });
@@ -210,16 +210,16 @@ namespace AstenBaaS.Samples
         {
             if (!_isLoggedIn) return;
 
-            _statusMessage = "🔄 Descargando partida desde la nube...";
+            _statusMessage = "🔄 Loading game progress from cloud...";
             AstenSDK.Instance.LoadPlayerData((success, jsonResponse) =>
             {
                 if (success)
                 {
-                    _statusMessage = "✅ Datos descargados correctly desde el servidor!";
+                    _statusMessage = "✅ Data loaded successfully from server!";
                     _lastServerResponse = jsonResponse;
-                    Debug.Log($"✅ [AstenQuickstart] Partida obtenida: {jsonResponse}");
+                    Debug.Log($"✅ [AstenQuickstart] Save data loaded: {jsonResponse}");
 
-                    // Extraer monedas y nivel reales del jugador para sincronizar la interfaz
+                    // Extract actual coins and level from player JSON to sync UI
                     try
                     {
                         if (jsonResponse.Contains("\"coins\":"))
@@ -247,12 +247,12 @@ namespace AstenBaaS.Samples
                     }
                     catch (System.Exception ex)
                     {
-                        Debug.LogWarning($"[AstenQuickstart] No se pudo parsear saldo de monedas/nivel del JSON: {ex.Message}");
+                        Debug.LogWarning($"[AstenQuickstart] Failed to parse coins/level from JSON: {ex.Message}");
                     }
                 }
                 else
                 {
-                    _statusMessage = "🔴 Error al obtener datos de la nube.";
+                    _statusMessage = "🔴 Error retrieving cloud data.";
                     _lastServerResponse = jsonResponse;
                 }
             });
@@ -263,20 +263,20 @@ namespace AstenBaaS.Samples
             if (!_isLoggedIn) return;
 
             int randomScore = Random.Range(1000, 9999);
-            _statusMessage = $"🔄 Enviando puntaje ({randomScore}) a la tabla global...";
+            _statusMessage = $"🔄 Submitting score ({randomScore}) to global leaderboard...";
 
             AstenSDK.Instance.SubmitScore("leaderboard_score", randomScore, "Player_" + randomScore, (success, response) =>
             {
                 if (success)
                 {
-                    _statusMessage = $"🏆 Récord de {randomScore} puntos publicado! Descargando tabla Top 5...";
+                    _statusMessage = $"🏆 High score of {randomScore} pts posted! Downloading Top 5 leaderboard...";
                     _lastServerResponse = response;
-                    Debug.Log($"🏆 [AstenQuickstart] Récord publicado en Leaderboards: {response}");
-                    GetSampleLeaderboard(); // Sincronizar y cambiar a pestaña de Top 5
+                    Debug.Log($"🏆 [AstenQuickstart] Score submitted to Leaderboard: {response}");
+                    GetSampleLeaderboard(); // Sync and switch to Top 5 tab
                 }
                 else
                 {
-                    _statusMessage = "🔴 Error al publicar en Leaderboard.";
+                    _statusMessage = "🔴 Error submitting to Leaderboard.";
                     _lastServerResponse = response;
                 }
             });
@@ -286,21 +286,21 @@ namespace AstenBaaS.Samples
         {
             if (!_isLoggedIn) return;
 
-            _statusMessage = "🔄 Consultando Top 5 del Leaderboard...";
-            _leaderboardSummary = "🔄 <i>Descargando ranking desde MongoDB Atlas...</i>";
+            _statusMessage = "🔄 Querying Top 5 Leaderboard...";
+            _leaderboardSummary = "🔄 <i>Downloading ranking from MongoDB Atlas...</i>";
             AstenSDK.Instance.GetTopScores("leaderboard_score", 5, (success, response) =>
             {
                 if (success)
                 {
-                    _statusMessage = "🏆 ¡Ranking Top 5 descargado con éxito desde la nube!";
+                    _statusMessage = "🏆 Top 5 Ranking downloaded successfully from cloud!";
                     _lastServerResponse = response;
                     ParseAndFormatLeaderboard(response);
-                    _viewTab = 1; // Cambiar automáticamente a la pestaña del Top 5
-                    Debug.Log($"🏆 [AstenQuickstart] Ranking obtenido: {response}");
+                    _viewTab = 1; // Switch automatically to Top 5 tab
+                    Debug.Log($"🏆 [AstenQuickstart] Ranking retrieved: {response}");
                 }
                 else
                 {
-                    _statusMessage = "🔴 Error al consultar Leaderboard.";
+                    _statusMessage = "🔴 Error querying Leaderboard.";
                     _lastServerResponse = response;
                 }
             });
@@ -311,7 +311,7 @@ namespace AstenBaaS.Samples
             try
             {
                 System.Text.StringBuilder sb = new System.Text.StringBuilder();
-                sb.AppendLine("<b>🏆 TOP 5 RANKING GLOBAL (En Vivo):</b>");
+                sb.AppendLine("<b>🏆 TOP 5 GLOBAL RANKING (Live):</b>");
                 
                 int count = 0;
                 int searchIndex = 0;
@@ -325,7 +325,7 @@ namespace AstenBaaS.Samples
                     string scoreStr = json.Substring(scoreIdx + 8, scoreEnd - (scoreIdx + 8)).Trim();
                     
                     int userIdx = json.IndexOf("\"username\":\"", searchIndex);
-                    string usernameStr = "Jugador Anónimo";
+                    string usernameStr = "Anonymous Player";
                     if (userIdx != -1 && userIdx < scoreIdx + 80)
                     {
                         int userEnd = json.IndexOf("\"", userIdx + 12);
@@ -341,7 +341,7 @@ namespace AstenBaaS.Samples
                 
                 if (count == 0)
                 {
-                    _leaderboardSummary = "🏆 <i>La tabla aún no tiene puntuaciones registradas en la nube.</i>";
+                    _leaderboardSummary = "🏆 <i>The leaderboard has no scores recorded in the cloud yet.</i>";
                 }
                 else
                 {
@@ -350,7 +350,7 @@ namespace AstenBaaS.Samples
             }
             catch
             {
-                _leaderboardSummary = "🏆 <i>Ranking actualizado (Revisa el JSON Técnico para ver el formato bruto).</i>";
+                _leaderboardSummary = "🏆 <i>Ranking updated (Check Technical JSON for raw format).</i>";
             }
         }
 
@@ -368,28 +368,28 @@ namespace AstenBaaS.Samples
 
             GUILayout.BeginArea(new Rect(35, 50, 450, 550));
 
-            // Estado Actual y Proveedor
-            GUILayout.Label($"<b>Estado:</b> {_statusMessage}", labelStyle);
+            // Status and Provider
+            GUILayout.Label($"<b>Status:</b> {_statusMessage}", labelStyle);
             if (_isLoggedIn)
             {
-                GUILayout.Label($"<b>Sesión Activa:</b> <color=green>{_activeProvider}</color>", labelStyle);
+                GUILayout.Label($"<b>Active Session:</b> <color=green>{_activeProvider}</color>", labelStyle);
             }
             GUILayout.Space(8);
 
             if (!_isLoggedIn)
             {
-                // Pestañas de autenticación
+                // Auth Tabs
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Toggle(_authTab == 0, " 🎮 Invitado (Device ID) ", "Button", GUILayout.Height(30))) _authTab = 0;
-                if (GUILayout.Toggle(_authTab == 1, " 📧 Correo & OTP ", "Button", GUILayout.Height(30))) _authTab = 1;
+                if (GUILayout.Toggle(_authTab == 0, " 🎮 Guest (Device ID) ", "Button", GUILayout.Height(30))) _authTab = 0;
+                if (GUILayout.Toggle(_authTab == 1, " 📧 Email & OTP ", "Button", GUILayout.Height(30))) _authTab = 1;
                 GUILayout.EndHorizontal();
                 GUILayout.Space(10);
 
                 if (_authTab == 0)
                 {
-                    GUILayout.Label("Entra instantáneamente sin contraseña usando el ID único de este dispositivo o editor:", labelStyle);
+                    GUILayout.Label("Log in instantly without a password using this device or editor's unique ID:", labelStyle);
                     GUILayout.Space(5);
-                    if (GUILayout.Button("Conectar como Invitado (Guest Login)", buttonStyle, GUILayout.Height(35)))
+                    if (GUILayout.Button("Connect as Guest (Guest Login)", buttonStyle, GUILayout.Height(35)))
                     {
                         LoginGuest();
                     }
@@ -397,32 +397,32 @@ namespace AstenBaaS.Samples
                 else if (_authTab == 1)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Correo:", GUILayout.Width(80));
+                    GUILayout.Label("Email:", GUILayout.Width(80));
                     _emailInput = GUILayout.TextField(_emailInput, textFieldStyle);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Contraseña:", GUILayout.Width(80));
+                    GUILayout.Label("Password:", GUILayout.Width(80));
                     _passwordInput = GUILayout.PasswordField(_passwordInput, '*', textFieldStyle);
                     GUILayout.EndHorizontal();
 
                     GUILayout.Space(5);
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("1. Registrar (Enviar OTP)", buttonStyle, GUILayout.Height(30)))
+                    if (GUILayout.Button("1. Register (Send OTP)", buttonStyle, GUILayout.Height(30)))
                     {
                         RegisterWithEmail();
                     }
-                    if (GUILayout.Button("3. Login (Ya Verificado)", buttonStyle, GUILayout.Height(30)))
+                    if (GUILayout.Button("3. Login (Verified)", buttonStyle, GUILayout.Height(30)))
                     {
                         LoginWithEmail();
                     }
                     GUILayout.EndHorizontal();
 
                     GUILayout.Space(5);
-                    GUILayout.Label("Código OTP recibido en correo (o '123456' en Sandbox):", labelStyle);
+                    GUILayout.Label("OTP Code received via email (or '123456' in Sandbox):", labelStyle);
                     GUILayout.BeginHorizontal();
                     _otpInput = GUILayout.TextField(_otpInput, textFieldStyle, GUILayout.Width(100));
-                    if (GUILayout.Button("2. Verificar OTP & Entrar", buttonStyle, GUILayout.Height(30)))
+                    if (GUILayout.Button("2. Verify OTP & Log In", buttonStyle, GUILayout.Height(30)))
                     {
                         VerifyEmailOTP();
                     }
@@ -431,13 +431,13 @@ namespace AstenBaaS.Samples
             }
             else
             {
-                // Opciones de Progresión una vez logueado
+                // Progression options once logged in
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Guardar en Nube (+250 Monedas)", buttonStyle, GUILayout.Height(35)))
+                if (GUILayout.Button("Save to Cloud (+250 Coins)", buttonStyle, GUILayout.Height(35)))
                 {
                     SaveSampleProgress();
                 }
-                if (GUILayout.Button("Cargar desde Nube", buttonStyle, GUILayout.Height(35)))
+                if (GUILayout.Button("Load from Cloud", buttonStyle, GUILayout.Height(35)))
                 {
                     LoadSampleProgress();
                 }
@@ -445,11 +445,11 @@ namespace AstenBaaS.Samples
 
                 GUILayout.Space(5);
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Publicar Récord (+Puntos)", buttonStyle, GUILayout.Height(35)))
+                if (GUILayout.Button("Submit High Score (+Pts)", buttonStyle, GUILayout.Height(35)))
                 {
                     SubmitSampleScore();
                 }
-                if (GUILayout.Button("🏆 Consultar Top 5 Nube", buttonStyle, GUILayout.Height(35)))
+                if (GUILayout.Button("🏆 Get Top 5 Cloud", buttonStyle, GUILayout.Height(35)))
                 {
                     GetSampleLeaderboard();
                 }
@@ -457,7 +457,7 @@ namespace AstenBaaS.Samples
 
                 GUILayout.Space(5);
                 GUI.backgroundColor = new Color(1f, 0.6f, 0.6f);
-                if (GUILayout.Button("🚪 Cerrar Sesión (Logout)", buttonStyle, GUILayout.Height(30)))
+                if (GUILayout.Button("🚪 Log Out (Logout)", buttonStyle, GUILayout.Height(30)))
                 {
                     Logout();
                 }
@@ -466,15 +466,15 @@ namespace AstenBaaS.Samples
 
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
-            if (GUILayout.Toggle(_viewTab == 0, " 🎨 Perfil Visual ", "Button", GUILayout.Height(25))) _viewTab = 0;
+            if (GUILayout.Toggle(_viewTab == 0, " 🎨 Visual Profile ", "Button", GUILayout.Height(25))) _viewTab = 0;
             if (GUILayout.Toggle(_viewTab == 1, " 🏆 Top 5 Ranking ", "Button", GUILayout.Height(25))) { if (_viewTab != 1 && _leaderboardSummary.StartsWith("💡")) GetSampleLeaderboard(); _viewTab = 1; }
-            if (GUILayout.Toggle(_viewTab == 2, " 💻 JSON Técnico ", "Button", GUILayout.Height(25))) _viewTab = 2;
+            if (GUILayout.Toggle(_viewTab == 2, " 💻 Technical JSON ", "Button", GUILayout.Height(25))) _viewTab = 2;
             GUILayout.EndHorizontal();
             GUILayout.Space(5);
 
             if (_viewTab == 0)
             {
-                // Dashboard amigable y visual
+                // Visual & Friendly Dashboard
                 GUIStyle cardStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.UpperLeft, fontSize = 12 };
                 GUILayout.BeginVertical(cardStyle, GUILayout.Height(125));
                 
@@ -484,24 +484,24 @@ namespace AstenBaaS.Samples
                         ? (AstenSDK.Instance.PlayerSessionToken.Length > 20 ? AstenSDK.Instance.PlayerSessionToken.Substring(0, 20) + "..." : AstenSDK.Instance.PlayerSessionToken) 
                         : "N/A";
                     
-                    GUILayout.Label($"🆔 <b>Player ID:</b> {AstenSDK.Instance.ActivePlayerId ?? "Sesión Local"}", labelStyle);
-                    GUILayout.Label($"🔑 <b>Token JWT:</b> <color=yellow>{shortToken}</color> (Verificado)", labelStyle);
+                    GUILayout.Label($"🆔 <b>Player ID:</b> {AstenSDK.Instance.ActivePlayerId ?? "Local Session"}", labelStyle);
+                    GUILayout.Label($"🔑 <b>JWT Token:</b> <color=yellow>{shortToken}</color> (Verified)", labelStyle);
                     GUILayout.Space(4);
-                    GUILayout.Label($"💰 <b>Monedas Nube:</b> <color=#55FF55>{_playerCoins}</color> | ⭐ <b>Nivel:</b> <color=#55FFFF>{_playerLevel}</color>", labelStyle);
-                    GUILayout.Label($"⚔️ <b>Arma Equipada:</b> Espada de Acero", labelStyle);
+                    GUILayout.Label($"💰 <b>Cloud Coins:</b> <color=#55FF55>{_playerCoins}</color> | ⭐ <b>Level:</b> <color=#55FFFF>{_playerLevel}</color>", labelStyle);
+                    GUILayout.Label($"⚔️ <b>Equipped Weapon:</b> Steel Sword", labelStyle);
                 }
                 else
                 {
-                    GUILayout.Label("💡 <i>Inicia sesión para visualizar aquí tu ID único, Token JWT de seguridad y el estado en tiempo real de tus variables en la nube.</i>", labelStyle);
+                    GUILayout.Label("💡 <i>Log in to view your unique Player ID, security JWT Token, and real-time state of your cloud variables here.</i>", labelStyle);
                     GUILayout.Space(5);
-                    GUILayout.Label($"<b>Último Evento:</b> {_statusMessage}", labelStyle);
+                    GUILayout.Label($"<b>Latest Event:</b> {_statusMessage}", labelStyle);
                 }
                 
                 GUILayout.EndVertical();
             }
             else if (_viewTab == 1)
             {
-                // Tabla Top 5 en vivo
+                // Live Top 5 Ranking
                 GUIStyle cardStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.UpperLeft, fontSize = 12 };
                 GUILayout.BeginVertical(cardStyle, GUILayout.Height(125));
                 GUILayout.Label(_leaderboardSummary, labelStyle);
@@ -509,8 +509,8 @@ namespace AstenBaaS.Samples
             }
             else
             {
-                // Consola de respuesta en pantalla (Raw JSON)
-                GUILayout.Label("<b>Respuesta Cruda del Backend / Payload:</b>", labelStyle);
+                // Response console (Raw JSON)
+                GUILayout.Label("<b>Raw Backend Response / Payload:</b>", labelStyle);
                 _lastServerResponse = GUILayout.TextArea(_lastServerResponse, GUILayout.Height(95));
             }
 

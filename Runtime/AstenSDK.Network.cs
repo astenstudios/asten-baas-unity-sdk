@@ -20,7 +20,7 @@ namespace AstenBaaS
 
             yield return webRequest.SendWebRequest();
 
-            // Extraer el string una sola vez para evitar instanciar strings de más
+            // Extract the string once to avoid instantiating extra strings
             string responseText = webRequest.downloadHandler?.text;
 
             if (webRequest.result == UnityWebRequest.Result.Success)
@@ -29,7 +29,7 @@ namespace AstenBaaS
             }
             else if (webRequest.result == UnityWebRequest.Result.ConnectionError)
             {
-                string offlineMsg = "Error de Conexión: No hay acceso a internet o el servidor no responde.";
+                string offlineMsg = "Connection Error: No internet access or server is unresponsive.";
                 Debug.LogWarning($"[AstenSDK] GET {offlineMsg}");
                 callback?.Invoke(false, offlineMsg);
             }
@@ -64,7 +64,7 @@ namespace AstenBaaS
             }
             else if (webRequest.result == UnityWebRequest.Result.ConnectionError)
             {
-                string offlineMsg = "Error de Conexión: No hay acceso a internet o el servidor no responde.";
+                string offlineMsg = "Connection Error: No internet access or server is unresponsive.";
                 Debug.LogWarning($"[AstenSDK] POST {offlineMsg}");
                 callback?.Invoke(false, offlineMsg);
             }
