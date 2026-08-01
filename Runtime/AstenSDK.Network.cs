@@ -8,10 +8,13 @@ namespace AstenBaaS
 {
     public partial class AstenSDK
     {
+        private const int DefaultTimeoutSeconds = 15;
 
         private IEnumerator GetRequestCoroutine(string endpoint, string apiKey, string playerToken, Action<bool, string> callback)
         {
             using UnityWebRequest webRequest = UnityWebRequest.Get(_backendUrl + endpoint);
+            webRequest.timeout = DefaultTimeoutSeconds;
+
             if (!string.IsNullOrEmpty(apiKey))
                 webRequest.SetRequestHeader("X-API-Key", apiKey);
 
@@ -20,7 +23,6 @@ namespace AstenBaaS
 
             yield return webRequest.SendWebRequest();
 
-            // Extract the string once to avoid instantiating extra strings
             string responseText = webRequest.downloadHandler?.text;
 
             if (webRequest.result == UnityWebRequest.Result.Success)
@@ -30,12 +32,12 @@ namespace AstenBaaS
             else if (webRequest.result == UnityWebRequest.Result.ConnectionError)
             {
                 string offlineMsg = "Connection Error: No internet access or server is unresponsive.";
-                Debug.LogWarning($"[AstenSDK] GET {offlineMsg}");
+                LogWarning($"GET {offlineMsg}");
                 callback?.Invoke(false, offlineMsg);
             }
             else
             {
-                Debug.LogError($"[AstenSDK] GET Error {webRequest.responseCode}: {webRequest.error}");
+                LogError($"GET Error {webRequest.responseCode}: {webRequest.error}");
                 callback?.Invoke(false, !string.IsNullOrEmpty(responseText) ? responseText : webRequest.error);
             }
         }
@@ -43,6 +45,8 @@ namespace AstenBaaS
         private IEnumerator PostRequestCoroutine(string endpoint, string jsonJsonPayload, string apiKey, string playerToken, Action<bool, string> callback)
         {
             using UnityWebRequest webRequest = new UnityWebRequest(_backendUrl + endpoint, "POST");
+            webRequest.timeout = DefaultTimeoutSeconds;
+            
             byte[] jsonToSend = Encoding.UTF8.GetBytes(jsonJsonPayload);
             webRequest.uploadHandler = new UploadHandlerRaw(jsonToSend);
             webRequest.downloadHandler = new DownloadHandlerBuffer();
@@ -65,15 +69,14 @@ namespace AstenBaaS
             else if (webRequest.result == UnityWebRequest.Result.ConnectionError)
             {
                 string offlineMsg = "Connection Error: No internet access or server is unresponsive.";
-                Debug.LogWarning($"[AstenSDK] POST {offlineMsg}");
+                LogWarning($"POST {offlineMsg}");
                 callback?.Invoke(false, offlineMsg);
             }
             else
             {
-                Debug.LogError($"[AstenSDK] POST Error {webRequest.responseCode}: {webRequest.error}");
+                LogError($"POST Error {webRequest.responseCode}: {webRequest.error}");
                 callback?.Invoke(false, !string.IsNullOrEmpty(responseText) ? responseText : webRequest.error);
             }
         }
-
     }
 }

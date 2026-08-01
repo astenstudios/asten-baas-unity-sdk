@@ -1,4 +1,4 @@
-# 🚀 Asten BaaS Unity SDK (v1.0.0)
+# 🚀 Asten BaaS Unity SDK (v1.0.1)
 
 [![Unity Version](https://img.shields.io/badge/Unity-2021.3%2B-blue.svg)](https://unity.com/)
 [![UPM Compatible](https://img.shields.io/badge/UPM-Compatible-brightgreen.svg)](https://docs.unity3d.com/Manual/Packages.html)
@@ -14,10 +14,10 @@ The **official C# SDK** to connect your **Unity** games with **Asten BaaS** (Bac
 
 * ⚡ **Zero Server Configuration:** Forget about configuring databases, AWS APIs, or managing tokens; the SDK handles the entire cloud lifecycle.
 * 🛡️ **Secure Hybrid Authentication:** Support for silent/anonymous login via **Device ID** and formal registration with **Email & 6-Digit OTP Verification**.
-* 🧠 **Cloud Saves with Smart Debouncing:** Built-in MongoDB Atlas save system with rate protection (3-second cooldown) to protect your game's FPS and prevent costly network spikes.
+* 🧠 **Cloud Saves with Smart Debouncing:** Built-in save system with rate protection (3-second cooldown) to protect your game's FPS and prevent costly network spikes.
 * 🏆 **Real-Time Global Leaderboards:** Submit scores, query competitive top rankings, and display medals (🥇🥈🥉) instantly.
 * 🌐 **100% WebGL and Mobile Compatible:** Built on top of native, asynchronous `UnityWebRequest`. Works flawlessly in browser games (**itch.io, Poki, CrazyGames**), Android, iOS, PC, Mac, and Consoles without blocking the Main Thread.
-* 📦 **Clean Isolation (`.asmdef`):** Zero yellow console warnings and total compatibility with popular packages like TextMeshPro, Cinemachine, or Newtonsoft.Json.
+* 📦 **Clean Isolation (`.asmdef`):** Zero console warnings and total compatibility with popular packages like TextMeshPro, Cinemachine, or Newtonsoft.Json.
 
 ---
 
@@ -50,9 +50,9 @@ To start using this SDK in your Unity project, you need a **Game ID** and an **A
 2. Click the **`+`** button (top-left corner) and select **Add package from git URL...**
 3. Paste the following official repository URL and click **Add**:
    ```text
-   https://github.com/astenstudios/asten-baas-unity-sdk.git#v1.0.0
+   https://github.com/astenstudios/asten-baas-unity-sdk.git#v1.0.1
    ```
-   *(Note: You can omit `#v1.0.0` to always download the latest development version).*
+   *(Note: You can omit `#v1.0.1` to always download the latest development version).*
 
 ### Method 2: `.unitypackage` File (Asset Store / Direct Download)
 1. Download the official package from the [Unity Asset Store]() or from the **Releases** section on GitHub.
@@ -68,25 +68,16 @@ git submodule add https://github.com/astenstudios/asten-baas-unity-sdk.git Packa
 
 ## 🕹️ Quickstart Demo Scene (1-Click Setup)
 
-The SDK includes a code-driven interactive scene (`AstenQuickstartDemo.cs`) built with Unity's native `OnGUI` interface. **No Canvas setup, TextMeshPro installation, or prefab dragging required.**
+The SDK includes a code-driven interactive demo scene (`AstenQuickstartDemo.unity` & `AstenQuickstartDemo.cs`) located in `Samples/DemoScene`. **No Canvas setup, TextMeshPro installation, or prefab dragging required.**
 
-> ⚠️ **IMPORTANT: Why do I only see the `Runtime/` folder after installing the package?**  
-> When installing an official package via Unity Package Manager (UPM), sample folders (`Samples~`) are intentionally hidden inside `Packages/` to prevent test scripts from compiling into your final build.  
-> **To access the Demo and test the SDK in 3 minutes, follow these steps:**
-> 
-> 1. In Unity Editor, go to **Window** ➔ **Package Manager**.
-> 2. Select **Asten BaaS SDK** in your installed packages list (or click the **All Samples** tab in the left menu).
-> 3. Find **Demo Scene & UI Components** and click the **`Import`** button.
-> 4. Done! Unity will import and copy the sample files directly to your Project folder under:  
->    👉 **`Assets/Samples/Asten BaaS SDK/1.0.0/Demo Scene & UI Components/`**
-> 5. Open that folder in your Project window.
+You can open `AstenQuickstartDemo.unity` directly from `Assets/AstenBaaS/Samples/DemoScene/` to run and test all authentication, cloud save, and leaderboard features in 1 minute.
 
 ### ⚙️ How to configure credentials in the Demo
 
 To connect the demo scene with your cloud databases, assign your **Game ID** and **API Key**:
 
 1. In your **Project** window, navigate to:  
-   👉 `Assets/Samples/Asten BaaS SDK/1.0.0/Demo Scene & UI Components/` and open **`SampleScene.unity`** (or any empty scene).
+   👉 `Assets/Samples/Asten BaaS SDK/1.0.1/Demo Scene & UI Components/` and open **`SampleScene.unity`** (or any empty scene).
 2. In your **Hierarchy** window, click the object with the demo script (or create an empty GameObject via `Right Click ➔ Create Empty` and name it `AstenDemo`).
 3. **Drag and drop** the script file **`AstenQuickstartDemo.cs`** from the Project window into the **Inspector** panel of that object (or click `Add Component` and search for *Asten Quickstart Demo*).
 4. In the component Inspector, you will see fields to enter your credentials:

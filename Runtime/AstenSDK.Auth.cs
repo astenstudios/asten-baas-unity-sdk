@@ -6,19 +6,23 @@ namespace AstenBaaS
     public partial class AstenSDK
     {
         /// <summary>
-        /// Registers a new end user (player) in the game.
+        /// Registers a new end-user (player) account.
+        /// Sends an email verification request with a 6-digit OTP code.
         /// </summary>
+        /// <param name="email">Player email address.</param>
+        /// <param name="password">Player password.</param>
+        /// <param name="callback">Callback containing success status and server JSON response.</param>
         public void RegisterPlayer(string email, string password, Action<bool, string> callback)
         {
             if (!_isInitialized)
             {
-                Debug.LogError("[AstenSDK] You cannot register a player without calling Initialize() first.");
+                LogError("You cannot register a player without calling Initialize() first.");
                 callback?.Invoke(false, "SDK not initialized");
                 return;
             }
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
-                Debug.LogError("[AstenSDK] Email and password are required.");
+                LogError("Email and password are required.");
                 callback?.Invoke(false, "Email or password cannot be empty");
                 return;
             }
@@ -28,32 +32,35 @@ namespace AstenBaaS
             {
                 if (success)
                 {
-                    Debug.Log($"[AstenSDK] Player registered successfully.");
+                    Log("Player registered successfully. Verification OTP dispatched.");
                 }
                 callback?.Invoke(success, response);
             }));
         }
 
         /// <summary>
-        /// Logs in a player under the game's context and saves the Player JWT.
+        /// Logs in an existing player using email and password.
         /// </summary>
+        /// <param name="email">Player email address.</param>
+        /// <param name="password">Player password.</param>
+        /// <param name="callback">Callback containing success status and server JSON response.</param>
         public void LoginPlayer(string email, string password, Action<bool, string> callback)
         {
             if (!_isInitialized)
             {
-                Debug.LogError("[AstenSDK] You cannot log in without calling Initialize() first.");
+                LogError("You cannot log in without calling Initialize() first.");
                 callback?.Invoke(false, "SDK not initialized");
                 return;
             }
             if (string.IsNullOrWhiteSpace(email))
             {
-                Debug.LogError("[AstenSDK] Email cannot be empty.");
+                LogError("Email cannot be empty.");
                 callback?.Invoke(false, "Email cannot be empty");
                 return;
             }
             if (string.IsNullOrWhiteSpace(password))
             {
-                Debug.LogError("[AstenSDK] Password cannot be empty.");
+                LogError("Password cannot be empty.");
                 callback?.Invoke(false, "Password cannot be empty");
                 return;
             }
@@ -63,39 +70,42 @@ namespace AstenBaaS
         }
 
         /// <summary>
-        /// Logs in (or automatically registers) a player anonymously using their Device ID.
+        /// Logs in or automatically registers a player anonymously using their unique device hardware ID.
+        /// Ideal for zero-friction guest onboarding.
         /// </summary>
+        /// <param name="callback">Callback containing success status and server JSON response.</param>
         public void LoginWithDeviceId(Action<bool, string> callback)
         {
             if (!_isInitialized)
             {
-                Debug.LogError("[AstenSDK] You cannot log in without calling Initialize() first.");
+                LogError("You cannot log in without calling Initialize() first.");
                 callback?.Invoke(false, "SDK not initialized");
                 return;
             }
 
-            // We use a local variable if deviceId was not provided as a parameter in the version we moved
             string deviceId = SystemInfo.deviceUniqueIdentifier;
-
             string payload = $"{{\"provider\":\"device\", \"device_id\":\"{deviceId}\"}}";
-            Debug.Log($" [AstenSDK] Logging in with payload: {payload}");
+            Log($"Logging in anonymously with Device ID...");
             ExecuteAuthRequest(payload, "device", callback);
         }
 
         /// <summary>
-        /// Verifies the player's email using the 6-digit OTP code sent to their inbox.
+        /// Verifies the player's email address using the 6-digit OTP code sent to their inbox.
         /// </summary>
+        /// <param name="email">Player email address.</param>
+        /// <param name="otpCode">6-digit verification code received by the player.</param>
+        /// <param name="callback">Callback containing success status and server JSON response.</param>
         public void VerifyPlayerEmail(string email, string otpCode, Action<bool, string> callback)
         {
             if (!_isInitialized)
             {
-                Debug.LogError("[AstenSDK] You cannot verify the email without calling Initialize() first.");
+                LogError("You cannot verify email without calling Initialize() first.");
                 callback?.Invoke(false, "SDK not initialized");
                 return;
             }
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(otpCode))
             {
-                Debug.LogError("[AstenSDK] Email and OTP code are required.");
+                LogError("Email and OTP code are required.");
                 callback?.Invoke(false, "Email and OTP cannot be empty");
                 return;
             }
@@ -105,65 +115,81 @@ namespace AstenBaaS
             {
                 if (success)
                 {
-                    string tokenSearch = "\"token\":\"";
-                    int tokenIndex = response.IndexOf(tokenSearch);
-                    if (tokenIndex != -1)
-                    {
-                        int start = tokenIndex + tokenSearch.Length;
-                        int end = response.IndexOf("\"", start);
-                        if (end != -1)
-                        {
-                            _playerSessionToken = response.Substring(start, end - start);
-                        }
-                    }
-
-                    ExtractAndSetPlayerId(response);
-                    Debug.Log($"[AstenSDK] ✅ Email verified successfully with OTP code! Active session for ID: {_activePlayerId}");
+                    ExtractAndSetSession(response);
+                    Log($"Email verified successfully! Session active for Player ID: {_activePlayerId}");
                 }
                 callback?.Invoke(success, response);
             }));
         }
 
         private void ExecuteAuthRequest(string payload, string providerName, Action<bool, string> callback)
-
-
         {
             StartCoroutine(PostRequestCoroutine("/player/auth", payload, _apiKey, null, (success, response) =>
             {
                 if (success)
                 {
-                    // Extract player token
-                    string tokenSearch = "\"token\":\"";
-                    int tokenIndex = response.IndexOf(tokenSearch);
-                    if (tokenIndex != -1)
-                    {
-                        int start = tokenIndex + tokenSearch.Length;
-                        int end = response.IndexOf("\"", start);
-                        if (end != -1)
-                        {
-                            _playerSessionToken = response.Substring(start, end - start);
-                        }
-                    }
-
-                    // Extract player ID
-                    ExtractAndSetPlayerId(response);
-
-                    Debug.Log($"[AstenSDK] Player authenticated successfully via {providerName}. ID: {_activePlayerId}");
+                    ExtractAndSetSession(response);
+                    Log($"Player authenticated successfully via {providerName}. ID: {_activePlayerId}");
                 }
                 callback?.Invoke(success, response);
             }));
         }
 
-        private void ExtractAndSetPlayerId(string response)
+        private void ExtractAndSetSession(string response)
+        {
+            if (string.IsNullOrEmpty(response)) return;
+
+            try
+            {
+                AuthResponse authData = JsonUtility.FromJson<AuthResponse>(response);
+                if (authData != null)
+                {
+                    if (!string.IsNullOrEmpty(authData.token))
+                    {
+                        _playerSessionToken = authData.token;
+                    }
+                    if (!string.IsNullOrEmpty(authData.PlayerId))
+                    {
+                        _activePlayerId = authData.PlayerId;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Fallback to substring parsing if response JSON has custom wrapper
+                ExtractTokenFallback(response);
+                ExtractPlayerIdFallback(response);
+            }
+
+            if (string.IsNullOrEmpty(_playerSessionToken)) ExtractTokenFallback(response);
+            if (string.IsNullOrEmpty(_activePlayerId)) ExtractPlayerIdFallback(response);
+        }
+
+        private void ExtractTokenFallback(string response)
+        {
+            string tokenSearch = "\"token\":\"";
+            int tokenIndex = response.IndexOf(tokenSearch, StringComparison.Ordinal);
+            if (tokenIndex != -1)
+            {
+                int start = tokenIndex + tokenSearch.Length;
+                int end = response.IndexOf("\"", start, StringComparison.Ordinal);
+                if (end != -1)
+                {
+                    _playerSessionToken = response.Substring(start, end - start);
+                }
+            }
+        }
+
+        private void ExtractPlayerIdFallback(string response)
         {
             string[] idKeys = new string[] { "\"id\":\"", "\"_id\":\"" };
             foreach (var key in idKeys)
             {
-                int index = response.IndexOf(key);
+                int index = response.IndexOf(key, StringComparison.Ordinal);
                 if (index != -1)
                 {
                     int start = index + key.Length;
-                    int end = response.IndexOf("\"", start);
+                    int end = response.IndexOf("\"", start, StringComparison.Ordinal);
                     if (end != -1)
                     {
                         _activePlayerId = response.Substring(start, end - start);
@@ -174,17 +200,17 @@ namespace AstenBaaS
         }
 
         /// <summary>
-        /// Closes the player's active session, clearing the JWT token and ID from memory.
+        /// Closes the active player session, clearing security JWT token and player ID from memory.
         /// </summary>
         public void Logout()
         {
             _activePlayerId = null;
             _playerSessionToken = null;
-            Debug.Log("[AstenSDK] 🚪 Player session closed successfully.");
+            Log("Player session closed successfully.");
         }
 
         /// <summary>
-        /// Closes the player's active session (Logout alias for naming consistency).
+        /// Closes the active player session (Logout alias for naming consistency).
         /// </summary>
         public void LogoutPlayer()
         {
