@@ -8,6 +8,8 @@ namespace AstenBaaS.Samples
     /// Requires no manual Canvas, TextMeshPro, or UI prefab configuration.
     /// Works out of the box by clicking Play in Unity Editor and covers all authentication flows.
     /// </summary>
+    [AddComponentMenu("Asten BaaS/Samples/Quickstart Demo")]
+    [DisallowMultipleComponent]
     public class AstenQuickstartDemo : MonoBehaviour
     {
         [Header("Asten BaaS Configuration")]

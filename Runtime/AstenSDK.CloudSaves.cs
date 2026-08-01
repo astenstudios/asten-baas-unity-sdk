@@ -6,16 +6,16 @@ namespace AstenBaaS
 {
     public partial class AstenSDK
     {
-
         /// <summary>
-        /// Retrieves the custom state (customData) of the active player.
+        /// Retrieves the stored custom state (customData) of the currently authenticated player.
         /// </summary>
+        /// <param name="callback">Callback containing success status and server JSON response.</param>
         public void LoadPlayerData(Action<bool, string> callback)
         {
             if (string.IsNullOrEmpty(_playerSessionToken))
             {
-                Debug.LogError("[AstenSDK] No active player session token. Call LoginPlayer() first.");
-                callback?.Invoke(false, "No active player token session");
+                LogError("No active player session token. Call LoginPlayer() or LoginWithDeviceId() first.");
+                callback?.Invoke(false, "No active player session token");
                 return;
             }
 
@@ -24,32 +24,32 @@ namespace AstenBaaS
         }
 
         /// <summary>
-        /// Saves the player's custom state. Includes built-in Debouncing protection and token validation.
+        /// Saves the player's custom state to cloud database.
+        /// Features built-in Debounce protection (3-second rate limit cooldown) to optimize performance.
         /// </summary>
+        /// <typeparam name="T">Class or struct type serializable via JsonUtility (or raw JSON string).</typeparam>
+        /// <param name="dataObject">Object instance or raw JSON string to persist.</param>
+        /// <param name="callback">Callback containing success status and server JSON response.</param>
         public void SavePlayerData<T>(T dataObject, Action<bool, string> callback)
         {
             if (string.IsNullOrEmpty(_playerSessionToken))
             {
-                Debug.LogError("[AstenSDK] No active player session token. Call LoginPlayer() first.");
-                callback?.Invoke(false, "No active player token session");
+                LogError("No active player session token. Call LoginPlayer() or LoginWithDeviceId() first.");
+                callback?.Invoke(false, "No active player session token");
                 return;
             }
 
-            // Convert the C# object or string to a JSON string
             string jsonPayload = (dataObject is string strJson) ? strJson : JsonUtility.ToJson(dataObject);
-            string fullPayload = $"{{\"custom_data\":{jsonPayload}}}"; // _userId is no longer required in the payload
+            string fullPayload = $"{{\"custom_data\":{jsonPayload}}}";
 
-            // Apply Debounce protection (cooldown)
             float timeSinceLastSave = Time.time - _lastSaveTime;
 
             if (timeSinceLastSave >= _saveCooldown)
             {
-                // Enough time has passed, save immediately
                 ExecuteSave(fullPayload, callback);
             }
             else
             {
-                // We are within the cooldown time, queue the save
                 _pendingSaveData = fullPayload;
                 _pendingSaveCallback = callback;
 
@@ -60,7 +60,7 @@ namespace AstenBaaS
 
                 float delay = _saveCooldown - timeSinceLastSave;
                 _pendingSaveCoroutine = StartCoroutine(ExecuteSaveDeferredCoroutine(delay));
-                Debug.LogWarning($"[AstenSDK] Save request queued. Sending in {delay:F2} seconds to protect the server.");
+                LogWarning($"Save request queued. Sending in {delay:F2} seconds to protect server bandwidth.");
             }
         }
 
